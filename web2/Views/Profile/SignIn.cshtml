@@ -1,0 +1,41 @@
+﻿@model web2.Models.User
+@{
+	ViewBag.Title = "Sign-In";
+}
+<h2>@ViewBag.Title</h2>
+<p>Enter your information and click the Sign-In button.</p>
+@using (Html.BeginForm(FormMethod.Post)) {
+
+	if (Model.ActionType == web2.Models.User.ActionTypes.LoginFailed) {
+		<div id="content-locked">
+			<i class="fad fa-exclamation-triangle fa-2x"></i>
+			<span>Invalid UserID and/or Password. Please try again.</span>
+		</div>
+	}
+
+	if (Model.ActionType == web2.Models.User.ActionTypes.RequiredFieldsMissing) {
+		<div id="content-locked">
+			<i class="fad fa-exclamation-triangle fa-2x"></i>
+			<span>All fields are reqired.</span>
+		</div>
+	}
+
+	<div class="section">
+		<div class="item">
+			<div>@Html.LabelFor(model => model.UserID)</div>
+			<div>@Html.TextBoxFor(model => model.UserID, new { @autofocus = "autofocus" })</div>
+		</div>
+		<div class="item">
+			<div>@Html.LabelFor(model => model.Password)</div>
+			<div>@Html.TextBoxFor(model => model.Password, new { type = "password" })</div>
+		</div>
+	</div>
+	<div>
+		<button id="btnSignIn" name="btnSubmit" value="signin" class="button-action"><i class="fas fa-sign-in-alt"></i> Sign-In</button>
+	</div>
+}
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('signin');
+	});
+</script>

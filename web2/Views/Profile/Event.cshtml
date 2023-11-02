@@ -1,0 +1,151 @@
+﻿@model web2.Models.Event
+
+@{
+	ViewBag.Title = string.Concat("Event: ", @Model.Title);
+}
+
+@if (!Model.User.IsAuthenticated) {
+	@Html.Partial("NotAuthenticated")
+}
+else {
+	string strHeader = ViewBag.Title;
+	string strText = "To make changes to your event enter your information below and click the Update button.";
+	if (Model.ID == 0) {
+		strHeader = "New Event";
+		strText = "Enter the information for this event and click the Save button.";
+	}
+
+	<h2>@strHeader</h2>
+	@Html.Partial("UserTabMenu")
+	<p>@strText</p>
+	if (Model.ActionType == web2.Models.Event.ActionTypes.RequiredFieldsMissing) {
+		<div id="content-locked">
+			<i class="fad fa-exclamation-triangle fa-2x"></i>
+			<span>Event title, event description, and location title are required.</span>
+		</div>
+	}
+
+	using (Html.BeginForm("Event", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) {
+		<input id="query-string-from" name="query-string-from" type="hidden" value="@Request.QueryString["from"]" />
+		<div id="user-profile-image">
+			@if (Model.EventImage != null) {
+				if (Model.EventImage.ImageID > 0) {
+					<div class="user-profile-image-container">
+						<img class="user-profile-thumbnail" src="@string.Concat("data:Image/",
+							Model.EventImage.FileExtension, ";base64,",
+							Model.EventImage.BytesBase64)" />
+					</div>
+				}
+			}
+		</div>
+		<div id="user-profile-data">
+			@Html.TextBoxFor(model => model.EventImage.ImageID, new { style = "display: none;" })
+
+			<div class="section">
+				<button class="button-action" id="btnUpdate2" name="btnSubmit" value="save"><i class='far fa-save'></i> Save</button>
+				@if (Model.ID > 0) { //don't show the delete unless this event has already been saved to the database
+					<button class="button-cancel" id="btnDelete2" name="btnSubmit" value="delete"><i class='far fa-trash-alt'></i> Delete</button>
+				}
+				<button class="button-cancel" id="btnClose2" name="btnSubmit" value="close"><i class='fa fa-times'></i> Close</button>
+			</div>
+
+			<div class="section">
+				<div class="section">
+					<div>User Profile Image</div>
+					<div>
+						<input class="profile-item" type="file" name="EventImage" id="EventImage" />
+					</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Title)</div>
+					<div>@Html.TextBoxFor(model => model.Title, new { @autofocus = "autofocus", @class = "field-width2" })</div>
+				</div>
+				<div class="item">
+					<div>&nbsp;</div>
+					<div>@Html.CheckBoxFor(model => model.IsActive) @Html.LabelFor(model => model.IsActive, "Is Active")</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Start, "Start Date")</div>
+					<div>@Html.TextBoxFor(model => model.Start, "{0:yyyy-MM-dd}", new { @class = "field-width3", @type = "date" })</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Start.TimeOfDay, "Start Time")</div>
+					<div>@Html.TextBoxFor(model => model.Start.TimeOfDay, new { @class = "field-width3", @type = "time" })</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.End, "End Date")</div>
+					<div>@Html.TextBoxFor(model => model.End, "{0:yyyy-MM-dd}", new { @class = "field-width3", @type = "date" })</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.End.TimeOfDay, "End Time")</div>
+					<div>@Html.TextBoxFor(model => model.End.TimeOfDay, new { @class = "field-width3", @type = "time" })</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Description)</div>
+					<div>@Html.TextAreaFor(model => model.Description, new { @class = "field-width1", @rows = "4" })</div>
+				</div>
+			</div>
+			<h3>Location</h3>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Title, "Location Title")</div>
+					<div>@Html.TextBoxFor(model => model.Location.Title, new { @class = "field-width1" })</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Description, "Location Description")</div>
+					<div>@Html.TextAreaFor(model => model.Location.Description, new { @class = "field-width1", @rows = "4" })</div>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Address.Address1)</div>
+					<div>@Html.TextBoxFor(model => model.Location.Address.Address1, new { @class = "field-width3" })</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Address.Address2)</div>
+					<div>@Html.TextBoxFor(model => model.Location.Address.Address2, new { @class = "field-width3" })</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Address.City)</div>
+					<div>@Html.TextBoxFor(model => model.Location.Address.City, new { @class = "field-width4" })</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Address.State)</div>
+					<div>@Html.TextBoxFor(model => model.Location.Address.State, new { @class = "field-width4" })</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Location.Address.Zip)</div>
+					<div>@Html.TextBoxFor(model => model.Location.Address.Zip, new { @class = "field-width4" })</div>
+				</div>
+			</div>
+
+			<div class="section">
+				<button class="button-action" id="btnUpdate" name="btnSubmit" value="save"><i class='far fa-save'></i> Save</button>
+				@if (Model.ID > 0) { //don't show the delete unless this event has already been saved to the database
+					<button class="button-cancel" id="btnDelete" name="btnSubmit" value="delete"><i class='far fa-trash-alt'></i> Delete</button>
+				}
+				<button class="button-cancel" id="btnClose" name="btnSubmit" value="close"><i class='fa fa-times'></i> Close</button>
+			</div>
+		</div>
+
+	}
+}
+
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('profile', 'events');
+	});
+</script>

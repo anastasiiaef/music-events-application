@@ -1,0 +1,27 @@
+﻿@model web2.Models.User
+
+@{
+	ViewBag.Title = "More About Us";
+}
+<h2>@ViewBag.Title</h2>
+
+<p class="event-date"> @Model.FirstName @Model.LastName is a student in Cincinnati State College. She is very nice and kind person!</p>
+<br />
+
+@using (Html.BeginForm(FormMethod.Post)) {
+	<div class="item">
+		<div>
+			<button id="btnClose" name="btnSubmit" value="close" class="button-action2"><i class="fa fa-times"></i> Close</button>
+		</div>
+	</div>
+}
+
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('aboutus', 'index');
+	});
+</script>
+
+
+
+

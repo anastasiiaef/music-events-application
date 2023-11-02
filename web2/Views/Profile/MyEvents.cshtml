@@ -1,0 +1,81 @@
+﻿@model web2.Models.User
+
+@{
+	ViewBag.Title = "My Events";
+}
+
+
+<style>
+	.user-image-container {
+		height: 225px;
+	}
+
+	.event-thumbnail {
+		margin: 0.25em;
+	}
+
+	.event-link {
+		font-weight: bold;
+		font-size: 0.8em;
+		margin-bottom: 0.2em;
+	}
+
+	.event-date {
+		font-size: 0.8em;
+		margin-bottom: 0.2em;
+	}
+
+	.in-active {
+		background-color: lightgrey;
+	}
+</style>
+
+
+<h2>@ViewBag.Title</h2>
+
+@if (!Model.IsAuthenticated) {
+	@Html.Partial("NotAuthenticated")
+}
+else {
+	@Html.Partial("UserTabMenu")
+
+	if (Model.Events.Count == 0) {
+		<p>You have no events. Click the <i>Add Event</i> link from the menu above to add a new event.</p>
+	}
+	else {
+		<div>
+			@foreach (web2.Models.Event e in Model.Events) {
+				<div id="image-@e.ID" class="user-image-container @(!e.IsActive ? "in-active":"")">
+					@if (e.EventImage != null) {
+						<a href="@Url.Action("Event", new { id = e.ID })">
+							<img class="user-profile-thumbnail" src="@string.Concat("data:Image/",
+								e.EventImage.FileExtension, ";base64,",
+								e.EventImage.BytesBase64)" />
+						</a>
+					}
+
+				<div class="event-thumbnail">
+					<div class="event-link"><a href="@Url.Action("Event", new { id = e.ID })">@e.Title</a></div>
+
+
+
+					@if (e.Start.Date == e.End.Date) {//The event starts and ends on the same day
+						<div class="event-date">@e.Start.DayOfWeek @e.Start.ToShortDateString()</div>
+						<div class="event-date">@e.Start.ToShortTimeString() to @e.End.ToShortTimeString()</div>
+					}
+					else {
+				<div class="event-date"> @e.Start.ToShortDateString() -  @e.End.ToShortDateString()</div>
+						<div class="event-date"> @e.Start.ToShortTimeString() to @e.End.ToShortTimeString()</div>
+					}
+				</div>
+				</div>
+			}
+		</div>
+	}
+
+}
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('profile', 'events');
+	});
+</script>

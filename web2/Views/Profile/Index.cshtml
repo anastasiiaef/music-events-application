@@ -1,0 +1,70 @@
+﻿@model web2.Models.User
+@{
+	ViewBag.Title = "Index";
+}
+<h2>@ViewBag.Title</h2>
+
+@if (!Model.IsAuthenticated) {
+	@Html.Partial("NotAuthenticated")
+}
+else {
+	@Html.Partial("UserTabMenu")
+	using (Html.BeginForm("Index", "Profile", FormMethod.Post, new { enctype = "multipart/form-data" })) {
+		<p>To make changes to your profile enter your information below and click the Update button.</p>
+		<div id="user-profile-image">
+			@if (Model.UserImage != null) {
+				if (Model.UserImage.ImageID > 0) {
+					<div class="user-profile-image-container">
+						<img class="user-profile-thumbnail" src="@string.Concat("data:Image/",
+						Model.UserImage.FileExtension, ";base64,",
+						Model.UserImage.BytesBase64)" />
+					</div>
+				}
+			}
+		</div>
+		@Html.TextBoxFor(model => model.UserImage.ImageID, new { style = "display: none;" })
+		<div id="user-profile-data">
+			<div class="section">
+				<div class="section">
+					<div>User Profile Image</div>
+					<div>
+						<input class="profile-item" type="file" name="UserImage" id="UserImage" />
+					</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.FirstName)</div>
+					<div>@Html.TextBoxFor(model => model.FirstName, new { @autofocus = "autofocus" })</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.LastName)</div>
+					<div>@Html.TextBoxFor(model => model.LastName)</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Email)</div>
+					<div>@Html.TextBoxFor(model => model.Email)</div>
+				</div>
+			</div>
+			<div class="section">
+				<div class="item">
+					<div>@Html.LabelFor(model => model.UserID)</div>
+					<div>@Html.TextBoxFor(model => model.UserID)</div>
+				</div>
+				<div class="item">
+					<div>@Html.LabelFor(model => model.Password)</div>
+					<div>@Html.TextBoxFor(model => model.Password, new { type = "password" })</div>
+				</div>
+			</div>
+			<div class="section">
+				<button class="button-action" id="btnUpdate" name="btnSubmit" value="update"><i class='far fa-save'></i> Update</button>
+			</div>
+		</div>
+	}
+}
+
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('profile', 'index');
+	});
+</script>

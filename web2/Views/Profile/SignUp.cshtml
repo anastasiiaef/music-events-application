@@ -1,0 +1,62 @@
+﻿@model web2.Models.User
+@{
+	ViewBag.Title = "Sign-Up";
+}
+<h2>@ViewBag.Title</h2>
+<p>Enter your information and click the Sign-Up button to sign up.</p>
+@using (Html.BeginForm(FormMethod.Post)) {
+
+	if (Model.ActionType == web2.Models.User.ActionTypes.DuplicateUserID) {
+		<div id="content-locked">
+			<i class="fad fa-exclamation-triangle fa-2x"></i>
+			<span>That user ID has already been used. To sign-up enter a different user ID.</span>
+		</div>
+	}
+
+	if (Model.ActionType == web2.Models.User.ActionTypes.DuplicateEmail) {
+		<div id="content-locked">
+			<i class="fad fa-exclamation-triangle fa-2x"></i>
+			<span>That email address has already been used. To sign-up enter a different email address.</span>
+		</div>
+	}
+
+	if (Model.ActionType == web2.Models.User.ActionTypes.RequiredFieldsMissing) {
+		<div id="content-locked">
+			<i class="fad fa-exclamation-triangle fa-2x"></i>
+			<span>All fields are reqired.</span>
+		</div>
+	}
+
+	<div class="section">
+		<div class="item">
+			<div>@Html.LabelFor(model => model.FirstName)</div>
+			<div>@Html.TextBoxFor(model => model.FirstName, new { @autofocus = "autofocus" })</div>
+		</div>
+		<div class="item">
+			<div>@Html.LabelFor(model => model.LastName)</div>
+			<div>@Html.TextBoxFor(model => model.LastName)</div>
+		</div>
+		<div class="item">
+			<div>@Html.LabelFor(model => model.Email)</div>
+			<div>@Html.TextBoxFor(model => model.Email)</div>
+		</div>
+	</div>
+	<div class="section">
+		<div class="item">
+			<div>@Html.LabelFor(model => model.UserID)</div>
+			<div>@Html.TextBoxFor(model => model.UserID)</div>
+		</div>
+		<div class="item">
+			<div>@Html.LabelFor(model => model.Password)</div>
+			<div>@Html.TextBoxFor(model => model.Password, new { type = "password" })</div>
+		</div>
+	</div>
+	<div>
+		<button id="btnSignUp" name="btnSubmit" value="signup" class="button-action"><i class='fas fa-user-plus'></i> Sign-Up</button>
+	</div>
+}
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('signup');
+	});
+</script>

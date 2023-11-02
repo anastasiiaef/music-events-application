@@ -1,0 +1,47 @@
+﻿@model web2.Models.Event
+
+@{
+	ViewBag.Title = string.Concat("Delete ", Model.Title, "?");
+}
+
+<h2>@ViewBag.Title?</h2>
+
+@Html.Partial("UserTabMenu")
+<p>Are you sure you want to delete this event?</p>
+
+@using (Html.BeginForm("DeleteEvent")) {
+	<div class="section">
+		<div id="item">
+			<div><b>Title</b>: @Model.Title</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<div id="item">
+			<div><b>Date</b>: @Model.Start.ToShortDateString()</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<div id="item">
+			<div><b>Location</b>: @Model.Location.Address.FullAddress</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<div id="item">
+			<div class="bold">Description</div>
+			<div>@Model.Description</div>
+		</div>
+	</div>
+
+	<div class="section">
+		<button class="button-alert" id="btnDelete" name="btnSubmit" value="delete"><i class='far fa-trash-alt'></i> Delete</button>
+		<button class="button-cancel" id="btnClose" name="btnSubmit" value="close"><i class='fa fa-times'></i> Cancel</button>
+	</div>
+}
+<script>
+	$(document).ready(function () {
+		SetActiveMenus('profile', 'events');
+	});
+</script>
